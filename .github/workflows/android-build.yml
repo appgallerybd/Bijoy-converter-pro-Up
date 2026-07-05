@@ -1,0 +1,73 @@
+name: Universal HTML to Android APK Compiler
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # এর মাধ্যমে কোড পুশ না করেও ম্যানুয়ালি বাটন টিপে অ্যাপ বিল্ড করা যাবে
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Fetch Repository Code
+        uses: actions/checkout@v4
+
+      - name: 2. Setup Node.js Environment (Latest Stable)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 3. Smart Directory & Dependency Setup
+        run: |
+          # বিল্ড ডিরেক্টরি তৈরি
+          mkdir -p www
+          
+          # যদি মূল ফোল্ডারে index.html না থেকে অন্য নামে থাকে (যেমন app.html), সেটি স্বয়ংক্রিয়ভাবে index.html হয়ে www তে যাবে
+          if [ -f "index.html" ]; then
+            cp index.html www/
+          else
+            # কোনো কারণে index.html না থাকলে প্রথম যে .html ফাইল পাবে সেটাকেই মেইন ফাইল বানাবে
+            cp *.html www/index.html 2>/dev/null || echo "No HTML file found!"
+          fi
+          
+          # সিএসএস, জেএস বা ইমেজ ফোল্ডার থাকলে সেগুলোকেও www তে কপি করবে যেন ডিজাইন না ভাঙে
+          cp -r css js images assets www/ 2>/dev/null || true
+          
+          # ইউনিভার্সাল প্যাকেজ কনফিগারেশন জেনারেট করা
+          echo '{"name": "universal-web-app", "version": "1.0.0", "dependencies": {"@capacitor/core": "^6.0.0", "@capacitor/android": "^6.0.0"}, "devDependencies": {"@capacitor/cli": "^6.0.0"}}' > package.json
+          npm install
+
+      - name: 4. Initialize & Configure Capacitor Framework
+        run: |
+          # ======================================================================================
+          # 🔴 শুধু নিচের এই লাইনে অ্যাপের নাম ("Bijoy Converter Pro") এবং প্যাকেজ আইডি ("com.nibrasit.bijoyconverter") পরিবর্তন করবেন।
+          # ======================================================================================
+          npx cap init "Converter Pro" "com.nibrasit.converterpro" --web-dir=www
+          
+          # প্রজেক্ট ও ফাইল স্ট্রাকচার সিঙ্ক করা
+          npx cap sync
+          
+          # নেটিভ অ্যান্ড্রয়েড প্ল্যাটফর্ম যুক্ত করা
+          npx cap add android
+
+      - name: 5. Setup Java Development Kit (JDK 17)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: 6. Compile Production-Ready APK
+        run: |
+          # অ্যান্ড্রয়েড সোর্স ফোল্ডারের পারমিশন রিলিজ করা
+          chmod -R 777 android/
+          cd android
+          
+          # গ্রেডেল স্ক্রিপ্ট আনলক এবং বিল্ড রান করা
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: 7. Deliver Completed Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Generated-Android-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
