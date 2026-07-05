@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bijoy Converter Pro</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&family=Cinzel+Decorative:wght@700;900&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  /* ── Dark palette: deep violet → indigo → cyan accent ── */
+  --bg:#07080f;
+  --surface:#0f1020;
+  --surface2:#161829;
+  --surface3:#1d2038;
+  --border:#252845;
+  --border-hi:#363a62;
+  --em:#7c3aed;           /* violet */
+  --em2:#6d28d9;
+  --em3:#a78bfa;
+  --accent:#06b6d4;       /* cyan */
+  --accent2:#0891b2;
+  --rose:#f43f5e;         /* rose */
+  --gold:#e879f9;         /* fuchsia highlight */
+  --gold2:#d946ef;
+  --text:#eaedf8;
+  --muted:#6e748f;
+  --dim:#303558;
+  --red:#f43f5e;
+  --radius:18px;
+
+  /* gradient accent used everywhere */
+  --g1:linear-gradient(135deg,#7c3aed 0%,#06b6d4 50%,#e879f9 100%);
+  --g2:linear-gradient(90deg,#7c3aed,#06b6d4,#e879f9);
+  --g3:linear-gradient(135deg,#6d28d9 0%,#0891b2 100%);
+
+  --header-bg:linear-gradient(160deg,#05060e 0%,#0b0d1c 50%,#05060e 100%);
+  --card-bg:linear-gradient(145deg,#10132200 0%,#0f1120 100%),
+            linear-gradient(145deg,#12152580,#0d1018 100%);
+  --card-bg:linear-gradient(145deg,#12152a 0%,#0d1018 100%);
+  --toolbar-bg:linear-gradient(180deg,#191c30 0%,#141728 100%);
+  --popup-bg:linear-gradient(145deg,#13162a 0%,#0e1020 100%);
+  --popup-head-bg:linear-gradient(180deg,#191d32 0%,#141828 100%);
+  --toggle-inner:#0b0d1e;
+  --toggle-inner-hover:#0f1125;
+  --overlay-bg:rgba(4,5,12,.8);
+}
+
+html.light{
+  /* ── Light palette: lavender → sky → blush ── */
+  --bg:#f3f4ff;
+  --surface:#ffffff;
+  --surface2:#f0f1ff;
+  --surface3:#e8eafe;
+  --border:#d0d3f0;
+  --border-hi:#b0b4e0;
+  --em:#7c3aed;
+  --em2:#6d28d9;
+  --em3:#a78bfa;
+  --accent:#0891b2;
+  --accent2:#0e7490;
+  --rose:#f43f5e;
+  --gold:#d946ef;
+  --gold2:#c026d3;
+  --text:#18193a;
+  --muted:#565882;
+  --dim:#a0a3c4;
+  --red:#e11d48;
+
+  --g1:linear-gradient(135deg,#7c3aed 0%,#06b6d4 50%,#e879f9 100%);
+  --g2:linear-gradient(90deg,#7c3aed,#06b6d4,#e879f9);
+  --g3:linear-gradient(135deg,#6d28d9 0%,#0891b2 100%);
+
+  --header-bg:linear-gradient(160deg,#eceeff 0%,#f5f5ff 50%,#eceeff 100%);
+  --card-bg:linear-gradient(145deg,#ffffff 0%,#f7f8ff 100%);
+  --toolbar-bg:linear-gradient(180deg,#ededff 0%,#e8eaff 100%);
+  --popup-bg:linear-gradient(145deg,#ffffff 0%,#f5f5ff 100%);
+  --popup-head-bg:linear-gradient(180deg,#ededff 0%,#e8eaff 100%);
+  --toggle-inner:#f0f1ff;
+  --toggle-inner-hover:#e8eaff;
+  --overlay-bg:rgba(80,85,160,.35);
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Noto Sans Bengali',sans-serif;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  overflow-x:hidden;
+}
+
+/* ═══ HEADER ═══ */
+.header{
+  background:var(--header-bg);
+  border-bottom:1px solid var(--border);
+  padding:18px 24px 20px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  transition:background .3s;
+}
+.header::after{
+  content:'';
+  position:absolute;
+  bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(124,58,237,.5),rgba(6,182,212,.4),rgba(232,121,249,.4),transparent);
+}
+.header::before{
+  content:'';
+  position:absolute;
+  top:-100px;left:50%;transform:translateX(-50%);
+  width:500px;height:200px;
+  background:radial-gradient(ellipse,rgba(124,58,237,.15) 0%,rgba(6,182,212,.08) 50%,transparent 70%);
+  pointer-events:none;
+}
+
+.brand-title{
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(.85rem,2.2vw,1.15rem);
+  font-weight:700;
+  letter-spacing:.08em;
+  line-height:1;
+  white-space:nowrap;
+}
+/* "Bijoy Converter " — static gradient */
+.brand-static{
+  background:var(--g1);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 0 18px rgba(124,58,237,.35));
+}
+/* "Pro" — continuous hue cycle, smooth and vivid */
+.brand-pro{
+  display:inline-block;
+  background:linear-gradient(90deg,
+    #7c3aed 0%,#06b6d4 20%,#e879f9 40%,#f43f5e 55%,#f59e0b 70%,#10b981 85%,#7c3aed 100%
+  );
+  background-size:300% 100%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:proShift 3s linear infinite;
+  filter:drop-shadow(0 0 10px rgba(232,121,249,.5));
+}
+@keyframes proShift{
+  0%  {background-position:0%   center}
+  100%{background-position:300% center}
+}
+
+/* ═══ TOGGLE BUTTON ═══ */
+.toggle-wrap{
+  display:flex;
+  justify-content:center;
+  margin:20px 0 0;
+}
+
+.toggle-btn{
+  position:relative;
+  width:clamp(280px,62vw,460px);
+  height:62px;
+  border-radius:9999px;
+  border:none;
+  cursor:pointer;
+  padding:2px;
+  background:var(--g2);
+  outline:none;
+  overflow:hidden;
+}
+.toggle-btn:focus-visible{outline:2px solid var(--em);outline-offset:3px}
+
+.toggle-inner{
+  width:100%;height:100%;
+  border-radius:9999px;
+  background:var(--toggle-inner);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  position:relative;
+  transition:background .3s;
+}
+.toggle-btn:hover .toggle-inner{background:var(--toggle-inner-hover)}
+
+/* clip container */
+.toggle-label-clip{
+  position:absolute;
+  inset:0;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  border-radius:9999px;
+}
+
+.toggle-label{
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(1rem,3.8vw,1.35rem);
+  font-weight:900;
+  letter-spacing:.08em;
+  display:flex;align-items:center;justify-content:center;
+  gap:clamp(8px,2vw,18px);
+  white-space:nowrap;
+  position:absolute;
+  inset:0;
+  padding:0 20px;
+  will-change:transform,opacity;
+}
+.toggle-arrow{
+  display:inline-block;
+  font-family:monospace;
+  font-size:1.15em;
+  background:var(--g2);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  flex-shrink:0;
+}
+#lFrom,#lTo{
+  background:var(--g2);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* perfectly smooth: no bounce, linear ease in/out */
+@keyframes slideUp{
+  from{ transform:translateY(0);    opacity:1 }
+  to  { transform:translateY(-105%);opacity:0 }
+}
+@keyframes slideDown{
+  from{ transform:translateY(105%); opacity:0 }
+  to  { transform:translateY(0);    opacity:1 }
+}
+.toggle-label.anim-exit { animation:slideUp   .2s  cubic-bezier(.3,0,.7,1)   forwards }
+.toggle-label.anim-enter{ animation:slideDown .32s cubic-bezier(.25,.8,.25,1) forwards }
+
+/* ripple */
+.t-ripple{
+  position:absolute;border-radius:50%;
+  background:rgba(124,58,237,.2);
+  transform:scale(0);
+  animation:ripple .55s ease-out forwards;
+  pointer-events:none;z-index:1;
+}
+@keyframes ripple{to{transform:scale(5);opacity:0}}
+
+@media(max-width:480px){
+  .toggle-btn{width:calc(100vw - 28px);height:54px}
+  .toggle-label{font-size:.88rem;letter-spacing:.05em;gap:8px;padding:0 14px}
+}
+
+/* ═══ MAIN ═══ */
+.main{
+  max-width:600px;
+  margin:0 auto;
+  padding:28px 16px 20px;
+  flex:1;
+  width:100%;
+}
+
+/* ═══ INPUT CARD ═══ */
+.card{
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:0 8px 40px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.06);
+  overflow:hidden;
+  transition:border-color .2s,box-shadow .2s,background .3s;
+}
+.card:focus-within{
+  border-color:rgba(124,58,237,.4);
+  box-shadow:0 8px 40px rgba(0,0,0,.3),0 0 0 1px rgba(124,58,237,.15),inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+/* icon toolbar */
+.card-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+  padding:14px 20px 12px;
+  border-bottom:1px solid var(--border);
+  background:var(--toolbar-bg);
+  transition:background .3s;
+}
+.icon-btn{
+  width:38px;height:38px;
+  border-radius:10px;
+  border:1px solid var(--border-hi);
+  background:var(--surface2);
+  color:var(--muted);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s cubic-bezier(.34,1.56,.64,1);
+  position:relative;
+}
+.icon-btn svg{width:16px;height:16px;stroke-width:1.8;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+.icon-btn:hover{
+  background:rgba(124,58,237,.12);
+  border-color:rgba(124,58,237,.45);
+  color:var(--em);
+  transform:translateY(-2px);
+  box-shadow:0 4px 14px rgba(124,58,237,.22);
+}
+.icon-btn:active{transform:translateY(0) scale(.94)}
+.icon-btn.danger:hover{
+  background:rgba(239,68,68,.1);
+  border-color:rgba(239,68,68,.35);
+  color:var(--red);
+  box-shadow:0 4px 14px rgba(239,68,68,.15);
+}
+
+/* tooltip */
+.icon-btn::after{
+  content:attr(data-tip);
+  position:absolute;
+  bottom:calc(100% + 8px);
+  left:50%;transform:translateX(-50%) scale(.85);
+  background:var(--surface2);
+  border:1px solid var(--border-hi);
+  color:var(--text);
+  font-size:.68rem;
+  letter-spacing:.04em;
+  white-space:nowrap;
+  padding:4px 10px;
+  border-radius:7px;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .15s,transform .15s;
+  font-family:'Noto Sans Bengali',sans-serif;
+}
+.icon-btn:hover::after{opacity:1;transform:translateX(-50%) scale(1)}
+
+/* ═══ THEME TOGGLE ═══ */
+.theme-btn{
+  position:absolute;
+  top:14px;right:16px;
+  width:36px;height:36px;
+  border-radius:50%;
+  border:1px solid var(--border-hi);
+  background:var(--surface2);
+  color:var(--muted);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .22s;
+  z-index:10;
+  padding:0;
+}
+.theme-btn:hover{
+  background:rgba(124,58,237,.14);
+  border-color:rgba(124,58,237,.5);
+  color:var(--em);
+  transform:scale(1.1) rotate(12deg);
+  box-shadow:0 4px 16px rgba(124,58,237,.25);
+}
+.theme-btn:active{transform:scale(.93)}
+.theme-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s}
+
+/* moon icon (dark mode) */
+.icon-moon{display:block}
+.icon-sun{display:none}
+html.light .icon-moon{display:none}
+html.light .icon-sun{display:block}
+
+/* smooth transition for all themed elements */
+body,
+.header,.card,.card-toolbar,.toggle-inner,
+.popup,.popup-header,.popup-footer,
+.icon-btn,.p-btn,.popup-close,footer{ }
+
+/* textarea */
+.card textarea{
+  width:100%;
+  min-height:200px;
+  background:transparent;
+  border:none;outline:none;
+  color:var(--text);
+  font-family:'Noto Sans Bengali',sans-serif;
+  font-size:1rem;
+  line-height:1.75;
+  padding:16px 20px;
+  resize:vertical;
+}
+.card textarea::placeholder{color:var(--dim)}
+
+/* char count strip */
+.card-footer{
+  padding:8px 18px;
+  border-top:1px solid var(--border);
+  font-size:.72rem;
+  color:var(--dim);
+  display:flex;justify-content:space-between;
+}
+
+/* ═══ CONVERT BUTTON ═══ */
+.convert-wrap{
+  display:flex;justify-content:center;
+  margin:18px 0 0;
+}
+.convert-btn{
+  padding:13px 52px;
+  border-radius:9999px;
+  border:none;
+  background:var(--g1);
+  color:#fff;
+  font-family:'Cinzel Decorative',serif;
+  font-size:.82rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  cursor:pointer;
+  transition:all .22s;
+  box-shadow:0 4px 24px rgba(124,58,237,.4);
+}
+.convert-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(124,58,237,.55)}
+.convert-btn:active{transform:translateY(0) scale(.97)}
+.convert-btn.loading{opacity:.65;pointer-events:none}
+
+/* ═══ OUTPUT POPUP ═══ */
+.overlay{
+  position:fixed;inset:0;
+  background:var(--overlay-bg);
+  backdrop-filter:blur(6px);
+  z-index:900;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s;
+}
+.overlay.open{opacity:1;pointer-events:all}
+
+.popup{
+  background:var(--popup-bg);
+  border:1px solid rgba(124,58,237,.25);
+  border-radius:22px;
+  box-shadow:0 24px 80px rgba(0,0,0,.35),0 0 0 1px rgba(124,58,237,.1),inset 0 1px 0 rgba(255,255,255,.06);
+  width:100%;max-width:560px;
+  max-height:82vh;
+  display:flex;flex-direction:column;
+  transform:translateY(28px) scale(.95);
+  transition:transform .28s cubic-bezier(.34,1.56,.64,1),opacity .25s,background .3s;
+  opacity:0;
+  overflow:hidden;
+}
+.overlay.open .popup{transform:translateY(0) scale(1);opacity:1}
+
+.popup-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px 13px;
+  background:var(--popup-head-bg);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  gap:10px;
+  transition:background .3s;
+}
+.popup-title{
+  font-size:.8rem;font-weight:600;letter-spacing:.06em;
+  color:var(--em);
+  display:flex;align-items:center;gap:7px;
+  flex:1;
+}
+.popup-title svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Nibras IT badge in header */
+.nibras-badge{
+  display:flex;align-items:center;
+  background:linear-gradient(135deg,rgba(124,58,237,.12) 0%,rgba(6,182,212,.1) 100%);
+  border:1px solid rgba(124,58,237,.28);
+  border-radius:9999px;
+  padding:4px 11px;
+  gap:5px;
+  flex-shrink:0;
+}
+.nibras-badge-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--g1);
+  flex-shrink:0;
+}
+.nibras-badge-text{
+  font-size:.6rem;font-weight:600;
+  letter-spacing:.08em;
+  background:var(--g1);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  white-space:nowrap;
+}
+
+.popup-close{
+  width:30px;height:30px;
+  border-radius:8px;
+  border:1px solid var(--border-hi);
+  background:var(--surface2);
+  color:var(--muted);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .18s;
+  font-size:1rem;line-height:1;
+  flex-shrink:0;
+}
+.popup-close:hover{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:var(--red)}
+
+.popup-body{
+  flex:1;overflow-y:auto;padding:18px 20px;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.popup-body::-webkit-scrollbar{width:5px}
+.popup-body::-webkit-scrollbar-track{background:transparent}
+.popup-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+.popup-text{
+  font-size:.97rem;line-height:1.8;
+  color:var(--text);
+  white-space:pre-wrap;word-break:break-word;
+  min-height:80px;
+}
+.popup-text.bijoy{font-family:'SutonnyMJ','SutonnyOMJ',serif}
+
+.popup-footer{
+  padding:14px 18px;
+  border-top:1px solid var(--border);
+  background:var(--popup-head-bg);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  gap:12px;
+  transition:background .3s;
+}
+.popup-actions{display:flex;gap:12px;justify-content:center}
+
+/* popup icon buttons */
+.p-btn{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 18px;
+  border-radius:9999px;
+  border:1px solid var(--border-hi);
+  background:var(--surface2);
+  color:var(--muted);
+  font-family:'Noto Sans Bengali',sans-serif;
+  font-size:.76rem;font-weight:500;
+  cursor:pointer;
+  transition:all .18s;
+}
+.p-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.p-btn.copy:hover{background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.4);color:var(--em)}
+.p-btn.clear-out:hover{background:rgba(244,63,94,.1);border-color:rgba(244,63,94,.35);color:var(--red)}
+.p-btn.success{background:var(--g3);border-color:var(--em);color:#fff}
+
+.popup-nibras{
+  font-size:.68rem;color:var(--dim);letter-spacing:.04em;
+  white-space:nowrap;
+}
+.popup-nibras span{color:var(--em);font-weight:600}
+
+/* ═══ FOOTER ═══ */
+footer{
+  text-align:center;
+  padding:18px 16px;
+  font-size:.72rem;
+  color:var(--dim);
+  border-top:1px solid var(--border);
+  letter-spacing:.04em;
+}
+footer span{background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:600}
+
+/* ═══ THEME FADE OVERLAY ═══ */
+.theme-fade{
+  position:fixed;inset:0;
+  pointer-events:none;
+  z-index:99999;
+  background:#07080f;
+  clip-path:circle(0px at 50% 50%);
+  will-change:clip-path;
+}
+
+/* ═══ TOAST ═══ */
+.toast{
+  position:fixed;bottom:24px;right:20px;
+  background:var(--g3);color:#fff;
+  padding:9px 18px;border-radius:10px;
+  font-size:.78rem;font-weight:500;
+  opacity:0;transform:translateY(12px);
+  transition:opacity .25s, transform .25s;pointer-events:none;
+  z-index:9999;box-shadow:0 6px 24px rgba(124,58,237,.4);
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.err{background:linear-gradient(135deg,#e11d48,#f43f5e);box-shadow:0 6px 24px rgba(244,63,94,.4)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin-ico{animation:spin .7s linear infinite;display:inline-block}
+</style>
+</head>
+<body>
+<div class="theme-fade" id="themeFade"></div>
+
+<!-- HEADER -->
+<div class="header">
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle theme">
+    <!-- Moon (shown in dark mode) -->
+    <svg class="icon-moon" viewBox="0 0 24 24">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>
+    </svg>
+    <!-- Sun (shown in light mode) -->
+    <svg class="icon-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4"/>
+      <line x1="12" y1="2" x2="12" y2="4"/>
+      <line x1="12" y1="20" x2="12" y2="22"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="2" y1="12" x2="4" y2="12"/>
+      <line x1="20" y1="12" x2="22" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+  </button>
+  <div class="brand-title"><span class="brand-static">Bijoy Converter </span><span class="brand-pro">Pro</span></div>
+
+  <!-- TOGGLE BUTTON -->
+  <div class="toggle-wrap">
+    <button class="toggle-btn" id="toggleBtn" onclick="handleToggle(event)" aria-label="Switch mode">
+      <div class="toggle-inner">
+        <div class="toggle-label-clip">
+          <div class="toggle-label" id="toggleLabel">
+            <span id="lFrom">UNICODE</span>
+            <span class="toggle-arrow">→</span>
+            <span id="lTo">BIJOY</span>
+          </div>
+        </div>
+      </div>
+    </button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- INPUT CARD -->
+  <div class="card" id="inputCard">
+    <div class="card-toolbar">
+      <button class="icon-btn" data-tip="কপি করুন" onclick="copyInput(this)" aria-label="Copy">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+      <button class="icon-btn" data-tip="পেস্ট করুন" onclick="pasteInput()" aria-label="Paste">
+        <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+      </button>
+      <button class="icon-btn danger" data-tip="মুছে ফেলুন" onclick="clearInput()" aria-label="Clear">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      </button>
+    </div>
+    <textarea id="inputBox" placeholder="এখানে টেক্সট লিখুন বা পেস্ট করুন..." oninput="onType()"></textarea>
+    <div class="card-footer">
+      <span id="charCount">০ অক্ষর</span>
+      <span id="modeLabel" style="background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:600;font-size:.7rem">UNICODE → BIJOY</span>
+    </div>
+  </div>
+
+  <!-- CONVERT BUTTON -->
+  <div class="convert-wrap">
+    <button class="convert-btn" id="convertBtn" onclick="doConvert()">CONVERT</button>
+  </div>
+
+</div>
+
+<!-- OUTPUT POPUP -->
+<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
+  <div class="popup" id="popup">
+    <div class="popup-header">
+      <div class="popup-title">
+        <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9S3 16.97 3 12 7.03 3 12 3s9 4.03 9 9z"/></svg>
+        <span id="popupTitle">Output — BIJOY</span>
+      </div>
+      <div class="nibras-badge">
+        <div class="nibras-badge-dot"></div>
+        <span class="nibras-badge-text">Nibras IT</span>
+      </div>
+      <button class="popup-close" onclick="closePopup()" aria-label="Close">✕</button>
+    </div>
+    <div class="popup-body">
+      <div class="popup-text" id="outputText"></div>
+    </div>
+    <div class="popup-footer">
+      <div class="popup-actions">
+        <button class="p-btn copy" id="popCopyBtn" onclick="copyOutput()">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span class="btn-label">Copy</span>
+        </button>
+        <button class="p-btn clear-out" onclick="clearOutput()">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          Clear
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>Powered by <span>Nibras IT</span></footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// CONVERSION ENGINE
+// ═══════════════════════════════════════════
+
+const u2bMap = {
+  'অ':'A','আ':'Av','ই':'B','ঈ':'C','উ':'D','ঊ':'E','ঋ':'F','এ':'G','ঐ':'H','ও':'I','ঔ':'J',
+  'ক':'K','খ':'L','গ':'M','ঘ':'N','ঙ':'O','চ':'P','ছ':'Q','জ':'R','ঝ':'S','ঞ':'T',
+  'ট':'U','ঠ':'V','ড':'W','ঢ':'X','ণ':'Y','ত':'Z','থ':'_','দ':'`','ধ':'a','ন':'b',
+  'প':'c','ফ':'d','ব':'e','ভ':'f','ম':'g','য':'h','র':'i','ল':'j','শ':'k','ষ':'l',
+  'স':'m','হ':'n','ড়':'o','ঢ়':'p','য়':'q','ৎ':'r','ং':'s','ঃ':':','ঁ':'t',
+  'া':'v','ি':'w','ী':'x','ু':'y','ূ':'z','ৃ':'„','ে':'†','ৈ':'‡','ো':'†v','ৌ':'†y',
+  '্':'&','০':'0','১':'1','২':'2','৩':'3','৪':'4','৫':'5','৬':'6','৭':'7','৮':'8','৯':'9',
+  '।':'|','॥':'||','\u200C':''
+};
+
+const conjU2B = {
+  'ক্ক':'K¡','ক্ট':'KÖ','ক্ত':'K&Z','ক্ন':'K&b','ক্ব':'K¡','ক্ম':'K&g','ক্য':'K¨','ক্র':'µ','ক্ল':'K¬','ক্ষ':'¶','ক্স':'K&m',
+  'গ্ন':'M&b','গ্ব':'M¡','গ্ম':'Mœ','গ্য':'M¨','গ্র':'MÖ','গ্ল':'M­',
+  'ঘ্ন':'N&b','ঘ্র':'NÖ','ঙ্ক':'O&K','ঙ্গ':'O&M',
+  'চ্চ':'P&P','চ্ছ':'P&Q','চ্ন':'P&b',
+  'জ্জ':'R&R','জ্ঝ':'R&S','জ্ঞ':'°','জ্ব':'R¡','জ্র':'RÖ',
+  'ট্ট':'U&U','ট্র':'UÖ','ড্ড':'W&W','ড্র':'WÖ',
+  'ণ্ট':'Y&U','ণ্ড':'Y&W','ণ্ণ':'Y&Y','ণ্ব':'Y¡','ণ্ম':'Y&g',
+  'ত্ত':'Z&Z','ত্থ':'Z&_','ত্ন':'Z&b','ত্ব':'Z¡','ত্ম':'Zœ','ত্য':'Z¨','ত্র':'Î',
+  'দ্দ':'`&`','দ্ধ':'×','দ্ব':'`¡','দ্য':'`¨','দ্র':'`Ö',
+  'ধ্ব':'a¡','ধ্র':'aÖ',
+  'ন্ট':'b&U','ন্ড':'b&W','ন্ত':'b&Z','ন্থ':'b&_','ন্দ':'b&`','ন্ধ':'b&a','ন্ন':'b&b','ন্ব':'b¡','ন্ম':'b&g','ন্য':'b¨',
+  'প্ত':'c&Z','ন্স':'b&m','প্ন':'c&b','প্য':'c¨','প্র':'cÖ','প্ল':'c­',
+  'ফ্র':'dÖ','ব্দ':'e&`','ব্ধ':'e&a','ব্ব':'e&e','ব্য':'e¨','ব্র':'eÖ','ব্ল':'e­',
+  'ভ্র':'fÖ','ম্ব':'g¡','ম্ভ':'ä','ম্ম':'g&g','ম্য':'g¨','ম্র':'gÖ','ম্ল':'g­',
+  'ল্ব':'j¡','ল্য':'j¨','ল্ল':'j&j',
+  'শ্ব':'k¡','শ্য':'k¨','শ্র':'kÖ','শ্ল':'k­',
+  'ষ্ট':'ó','ষ্ঠ':'ô','ষ্ব':'l¡','ষ্য':'l¨',
+  'স্ত':'m&Z','স্থ':'m&_','স্ব':'m¡','স্য':'m¨','স্র':'mÖ','স্ল':'m­',
+  'হ্ন':'n&b','হ্ব':'n¡','হ্ম':'n&g','হ্য':'n¨','হ্র':'nÖ','হ্ল':'n­'
+};
+
+const b2uMap = {
+  'A':'অ','Av':'আ','B':'ই','C':'ঈ','D':'উ','E':'ঊ','F':'ঋ','G':'এ','H':'ঐ','I':'ও','J':'ঔ',
+  'K':'ক','L':'খ','M':'গ','N':'ঘ','O':'ঙ','P':'চ','Q':'ছ','R':'জ','S':'ঝ','T':'ঞ',
+  'U':'ট','V':'ঠ','W':'ড','X':'ঢ','Y':'ণ','Z':'ত','_':'থ','`':'দ','a':'ধ','b':'ন',
+  'c':'প','d':'ফ','e':'ব','f':'ভ','g':'ম','h':'য','i':'র','j':'ল','k':'শ','l':'ষ',
+  'm':'স','n':'হ','o':'ড়','p':'ঢ়','q':'য়','r':'ৎ','s':'ং',':':'ঃ','t':'ঁ',
+  'v':'া','w':'ি','x':'ী','y':'ু','z':'ূ','„':'ৃ','†':'ে','‡':'ৈ','†v':'ো','†y':'ৌ',
+  '&':'্','|':'।',
+  '0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'
+};
+
+function unicodeToBijoy(text) {
+  if(!text) return '';
+  const cKeys = Object.keys(conjU2B).sort((a,b)=>b.length-a.length);
+  let result='', i=0;
+  while(i<text.length){
+    let matched=false;
+    for(const k of cKeys){
+      if(text.startsWith(k,i)){result+=conjU2B[k];i+=k.length;matched=true;break}
+    }
+    if(matched) continue;
+    const ch=text[i];
+    if(ch==='ে'||ch==='ৈ'){result=insertEKaar(result,u2bMap[ch]||ch);i++;continue}
+    if(ch==='ো'){result=insertEKaar(result,'†');result+='v';i++;continue}
+    if(ch==='ৌ'){result=insertEKaar(result,'†');result+='y';i++;continue}
+    if(ch==='র'&&i+1<text.length&&text[i+1]==='্'){result+='i©';i+=2;continue}
+    result+=u2bMap[ch]!==undefined?u2bMap[ch]:ch;
+    i++;
+  }
+  return result;
+}
+function insertEKaar(str,v){
+  const c='KLMNOPQRSTUVWXYZabcdefghijklmnopqr_`';
+  let pos=str.length;
+  while(pos>0&&!c.includes(str[pos-1]))pos--;
+  while(pos>0&&c.includes(str[pos-1]))pos--;
+  return str.slice(0,pos)+v+str.slice(pos);
+}
+
+function bijoyToUnicode(text) {
+  if(!text) return '';
+  const multi={
+    '†v':'ো','†y':'ৌ','†‡':'ৈ','Av':'আ','i©':'র্',
+    'K¡':'ক্ব','KÖ':'ক্ট','K¨':'ক্য','µ':'ক্র','K¬':'ক্ল','¶':'ক্ষ',
+    'M¨':'গ্য','MÖ':'গ্র','Mœ':'গ্ম','M­':'গ্ল','NÖ':'ঘ্র',
+    'P&P':'চ্চ','P&Q':'চ্ছ','R&R':'জ্জ','R&S':'জ্ঝ','°':'জ্ঞ','R¡':'জ্ব','RÖ':'জ্র',
+    'U&U':'ট্ট','UÖ':'ট্র','W&W':'ড্ড','WÖ':'ড্র',
+    'Z&Z':'ত্ত','Z&_':'ত্থ','Z&b':'ত্ন','Z¡':'ত্ব','Zœ':'ত্ম','Z¨':'ত্য','Î':'ত্র',
+    '×':'দ্ধ','`¡':'দ্ব','`¨':'দ্য','`Ö':'দ্র','a¡':'ধ্ব','aÖ':'ধ্র',
+    'b&Z':'ন্ত','b&_':'ন্থ','b&`':'ন্দ','b&a':'ন্ধ','b¡':'ন্ব','b¨':'ন্য',
+    'cÖ':'প্র','c¨':'প্য','c­':'প্ল','dÖ':'ফ্র',
+    'e¡':'ব্ব','e¨':'ব্য','eÖ':'ব্র','e­':'ব্ল','fÖ':'ভ্র',
+    'g¡':'ম্ব','ä':'ম্ভ','g¨':'ম্য','gÖ':'ম্র','g­':'ম্ল',
+    'j¡':'ল্ব','j¨':'ল্য','j&j':'ল্ল',
+    'k¡':'শ্ব','k¨':'শ্য','kÖ':'শ্র','k­':'শ্ল',
+    'ó':'ষ্ট','ô':'ষ্ঠ','l¡':'ষ্ব','l¨':'ষ্য',
+    'm¡':'স্ব','m¨':'স্য','mÖ':'স্র','m­':'স্ল',
+    'n¡':'হ্ব','n¨':'হ্য','nÖ':'হ্র','n­':'হ্ল',
+    '¨':'্য','Ö':'্র','¡':'্ব','­':'্ল','&':'্',
+    'v':'া','w':'ি','x':'ী','y':'ু','z':'ূ','„':'ৃ','†':'ে','‡':'ৈ'
+  };
+  const sorted=Object.keys(multi).sort((a,b)=>b.length-a.length);
+  const bijCons='KLMNOPQRSTUVWXYZabcdefghijklmnopqr_`';
+  let result='',i=0;
+  while(i<text.length){
+    let matched=false;
+    for(const k of sorted){
+      if(text.startsWith(k,i)){
+        const uni=multi[k];
+        if(k==='†'||k==='†v'||k==='†y'||k==='†‡'){
+          let ahead=i+k.length,cons='';
+          while(ahead<text.length&&bijCons.includes(text[ahead])){cons+=text[ahead];ahead++}
+          for(const c of cons)result+=b2uMap[c]||c;
+          result+=uni;i=ahead;matched=true;break;
+        }
+        result+=uni;i+=k.length;matched=true;break;
+      }
+    }
+    if(!matched){
+      const ch=text[i];
+      result+=b2uMap[ch]!==undefined?b2uMap[ch]:ch;
+      i++;
+    }
+  }
+  return result;
+}
+
+// ═══════════════════════════════════════════
+// UI STATE
+// ═══════════════════════════════════════════
+let mode = 'u2b'; // 'u2b' | 'b2u'
+
+function handleToggle(e) {
+  // ripple
+  const btn = document.getElementById('toggleBtn');
+  const ripple = document.createElement('div');
+  ripple.className = 't-ripple';
+  const rect = btn.getBoundingClientRect();
+  const sz = Math.max(rect.width, rect.height);
+  const cx = (e.clientX||rect.left+rect.width/2)-rect.left-sz/2;
+  const cy = (e.clientY||rect.top+rect.height/2)-rect.top-sz/2;
+  ripple.style.cssText=`width:${sz}px;height:${sz}px;left:${cx}px;top:${cy}px;position:absolute`;
+  btn.querySelector('.toggle-inner').appendChild(ripple);
+  setTimeout(()=>ripple.remove(),550);
+
+  mode = mode==='u2b'?'b2u':'u2b';
+
+  // animate label
+  const label = document.getElementById('toggleLabel');
+  label.classList.remove('anim-enter');
+  label.classList.add('anim-exit');
+  setTimeout(()=>{
+    updateLabel();
+    label.classList.remove('anim-exit');
+    label.classList.add('anim-enter');
+  }, 220);
+
+  // update footer badge
+  document.getElementById('modeLabel').textContent = mode==='u2b'?'UNICODE → BIJOY':'BIJOY → UNICODE';
+
+  // clear
+  document.getElementById('inputBox').value='';
+  onType();
+}
+
+function updateLabel(){
+  document.getElementById('lFrom').textContent = mode==='u2b'?'UNICODE':'BIJOY';
+  document.getElementById('lTo').textContent   = mode==='u2b'?'BIJOY':'UNICODE';
+}
+
+function onType(){
+  const v = document.getElementById('inputBox').value;
+  document.getElementById('charCount').textContent = toBn(v.length)+' অক্ষর';
+}
+
+function toBn(n){
+  return String(n).replace(/\d/g,d=>'০১২৩৪৫৬৭৮৯'[d]);
+}
+
+// ═══════════════════════════════════════════
+// TOOLBAR ACTIONS — Input Card
+// ═══════════════════════════════════════════
+
+function copyInput(btn){
+  const box = document.getElementById('inputBox');
+  const v = box.value;
+  if(!v){ toast('কপি করার কিছু নেই', true); return; }
+  clipboardWrite(v, ()=>{
+    if(btn) flashIconBtn(btn);
+    toast('ইনপুট কপি হয়েছে ✓');
+  });
+}
+
+function pasteInput(){
+  // Try Clipboard API first, fallback to focus+execCommand
+  if(navigator.clipboard && navigator.clipboard.readText){
+    navigator.clipboard.readText()
+      .then(t=>{
+        document.getElementById('inputBox').value = t;
+        onType();
+        toast('পেস্ট হয়েছে ✓');
+      })
+      .catch(()=> focusPaste());
+  } else {
+    focusPaste();
+  }
+}
+
+function focusPaste(){
+  const box = document.getElementById('inputBox');
+  box.focus();
+  // Let browser handle Ctrl+V natively, just guide user
+  toast('বক্সে ক্লিক করে Ctrl+V চাপুন', false);
+}
+
+function clearInput(){
+  const box = document.getElementById('inputBox');
+  box.value = '';
+  box.focus();
+  onType();
+  toast('মুছে ফেলা হয়েছে');
+}
+
+// ═══════════════════════════════════════════
+// CONVERT
+// ═══════════════════════════════════════════
+function doConvert(){
+  const inp = document.getElementById('inputBox').value;
+  if(!inp.trim()){ toast('প্রথমে টেক্সট লিখুন বা পেস্ট করুন', true); return; }
+  const btn = document.getElementById('convertBtn');
+  btn.classList.add('loading');
+  btn.textContent = 'Converting...';
+  setTimeout(()=>{
+    try{
+      const out = mode==='u2b' ? unicodeToBijoy(inp) : bijoyToUnicode(inp);
+      showPopup(out);
+    } catch(err){
+      toast('কনভার্টে ত্রুটি হয়েছে', true);
+      console.error(err);
+    }
+    btn.classList.remove('loading');
+    btn.textContent = 'CONVERT';
+  }, 80);
+}
+
+// ═══════════════════════════════════════════
+// POPUP
+// ═══════════════════════════════════════════
+function showPopup(text){
+  const el = document.getElementById('outputText');
+  el.textContent = text;
+  el.className = 'popup-text' + (mode==='u2b' ? ' bijoy' : '');
+  document.getElementById('popupTitle').textContent =
+    mode==='u2b' ? 'Output — BIJOY' : 'Output — UNICODE';
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePopup(){
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e){
+  if(e.target === document.getElementById('overlay')) closePopup();
+}
+
+function copyOutput(){
+  const t = document.getElementById('outputText').textContent;
+  if(!t){ toast('কপি করার কিছু নেই', true); return; }
+  const btn = document.getElementById('popCopyBtn');
+  clipboardWrite(t, ()=>{
+    // success state
+    btn.classList.add('success');
+    const svg = btn.querySelector('svg');
+    const label = btn.querySelector('.btn-label');
+    if(svg) svg.style.display = 'none';
+    if(label) label.textContent = 'Copied!';
+    toast('আউটপুট কপি হয়েছে ✓');
+    setTimeout(()=>{
+      btn.classList.remove('success');
+      if(svg) svg.style.display = '';
+      if(label) label.textContent = 'Copy';
+    }, 2000);
+  });
+}
+
+function clearOutput(){
+  document.getElementById('outputText').textContent = '';
+  closePopup();
+}
+
+// ═══════════════════════════════════════════
+// CLIPBOARD HELPER (works in all browsers)
+// ═══════════════════════════════════════════
+function clipboardWrite(text, onSuccess){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text)
+      .then(onSuccess)
+      .catch(()=> legacyCopy(text, onSuccess));
+  } else {
+    legacyCopy(text, onSuccess);
+  }
+}
+
+function legacyCopy(text, onSuccess){
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    if(ok && onSuccess) onSuccess();
+    else toast('কপি করা সম্ভব হয়নি', true);
+  } catch(e){
+    toast('কপি করা সম্ভব হয়নি', true);
+  }
+}
+
+function flashIconBtn(btn){
+  if(!btn) return;
+  btn.style.background = 'rgba(124,58,237,.2)';
+  btn.style.borderColor = 'rgba(124,58,237,.5)';
+  btn.style.color = 'var(--em)';
+  setTimeout(()=>{
+    btn.style.background = '';
+    btn.style.borderColor = '';
+    btn.style.color = '';
+  }, 800);
+}
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+let tt;
+function toast(msg, err=false){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (err ? ' err' : '');
+  clearTimeout(tt);
+  tt = setTimeout(()=> el.classList.remove('show'), 2400);
+}
+
+// ═══════════════════════════════════════════
+// THEME TOGGLE
+// ═══════════════════════════════════════════
+let themeSwitching = false;
+function toggleTheme(){
+  if(themeSwitching) return;
+  themeSwitching = true;
+
+  const doc  = document.documentElement;
+  const fade = document.getElementById('themeFade');
+  const btn  = document.getElementById('themeBtn');
+
+  // Origin point = the theme button's center
+  const rect = btn.getBoundingClientRect();
+  const fx = rect.left + rect.width / 2;
+  const fy = rect.top  + rect.height / 2;
+
+  // Radius big enough to cover the whole viewport from that point
+  const maxRadius = Math.hypot(
+    Math.max(fx, window.innerWidth  - fx),
+    Math.max(fy, window.innerHeight - fy)
+  );
+
+  // Button does a full spin while the theme flips underneath
+  btn.style.transition = 'transform .86s cubic-bezier(.65,0,.35,1)';
+  btn.style.transform  = 'rotate(360deg)';
+  setTimeout(() => { btn.style.transition = ''; btn.style.transform = ''; }, 900);
+
+  // Paint the overlay in the CURRENT theme's color (covers what's on screen now)
+  fade.style.background = doc.classList.contains('light') ? '#f3f4ff' : '#07080f';
+  fade.style.transition = 'none';
+  fade.style.clipPath   = `circle(0px at ${fx}px ${fy}px)`;
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      // Step 1 — circle EXPANDS from the button to cover the screen
+      fade.style.transition = 'clip-path .42s cubic-bezier(.65,0,.35,1)';
+      fade.style.clipPath   = `circle(${maxRadius}px at ${fx}px ${fy}px)`;
+    });
+  });
+
+  // Step 2 — once fully covered, flip theme + repaint overlay in NEW color, then contract
+  setTimeout(() => {
+    doc.classList.toggle('light');
+    const isLight = doc.classList.contains('light');
+    localStorage.setItem('bcp-theme', isLight ? 'light' : 'dark');
+
+    fade.style.background = isLight ? '#f3f4ff' : '#07080f';
+    fade.style.transition = 'clip-path .42s cubic-bezier(.65,0,.35,1)';
+    fade.style.clipPath   = `circle(0px at ${fx}px ${fy}px)`;
+  }, 430);
+
+  // Release the guard once everything settles
+  setTimeout(() => { themeSwitching = false; }, 900);
+}
+
+// restore saved theme
+(function(){
+  if(localStorage.getItem('bcp-theme') === 'light'){
+    document.documentElement.classList.add('light');
+  }
+})();
+
+// keyboard shortcuts
+document.addEventListener('keydown', e=>{
+  if(e.key === 'Escape') closePopup();
+  if((e.ctrlKey||e.metaKey) && e.key === 'Enter') doConvert();
+});
+</script>
+</body>
+</html>
